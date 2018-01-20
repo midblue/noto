@@ -1,6 +1,6 @@
 <template>
   <div class="menu">
-    <div @click="$emit('addContainer')">+</div>
+    <div @click="$store.commit('newContainer')">+</div>
   </div>
 </template>
 
@@ -16,7 +16,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $width: 50px;
 
 .menu {

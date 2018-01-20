@@ -1,14 +1,13 @@
 <template>
   <div id="app">
-    <Menu
-      v-on:addContainer="addContainer"
-    />
+    <Menu />
     <Container
-      v-for="container, index in containers"
+      v-for="container, index in renderedContainers"
       :key="index"
       :x="container.x"
       :y="container.y"
-      :id="index"
+      :title="container.title"
+      :containerID="index"
       :panes="container.panes"
     />
   </div>
@@ -22,45 +21,43 @@ export default {
   components: { Container, Menu, },
   data () {
     return {
-      containers: {},
+      renderedContainers: {},
     }
+  },
+  computed: {
+    textChangeFlag () { return this.$store.state.textChangeFlag },
+    containers () { return this.$store.state.containers },
+    panes () { return this.$store.state.panes },
+  },
+  watch: {
+    containers() { this.updateRenderedContainers() },
+    panes() { this.updateRenderedContainers() },
   },
   mounted () {
-    let storedContainers = window.localStorage.getItem('containers')
-    if (storedContainers === 'undefined') storedContainers = null
-    console.log(storedContainers)
-    this.containers = storedContainers ? JSON.parse(storedContainers) 
-    : {
-      'pane1' : {
-        x: 20,
-        y: 30,
-        panes: [
-          'hi',
-          '2',
-          '3!!'
-        ]
-      }
-    }
-    this.$store.commit('naiveSet', { containers: this.containers })
-    this.updateContainersInStorage()
+    this.updateRenderedContainers()
   },
   methods: {
-    updateContainersInStorage () {
-      const toStore = JSON.stringify(this.$store.state.containers)
-      window.localStorage.setItem('containers', toStore)
-    },
-    addContainer () {
-      this.$set(this.containers, 'c' + Date.now(), {
-        x: 100,
-        y: 20,
-        panes: [ 'new' ]
+    updateRenderedContainers () {
+      this.$nextTick(() => {
+        if (this.textChangeFlag) return
+        console.log('up')
+        const containersWithPanes = this.containers
+        for (let c in containersWithPanes) containersWithPanes[c].panes = []
+        const panes = this.panes
+        for (let p in panes) {
+          if (panes[p].containerID){
+            containersWithPanes[panes[p].containerID].panes.push(panes[p])
+          }
+          else console.log('floater')
+        }
+        this.renderedContainers = containersWithPanes
       })
     }
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

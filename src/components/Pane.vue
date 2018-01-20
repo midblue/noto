@@ -1,29 +1,33 @@
 <template>
   <div
     class="pane"
-    contenteditable="true"
-    @input="updatePane"
+    :id="paneID"
   >
     <div class="handle">
       .
     </div>
-    <div class="content">
-      <slot></slot>
-    </div>
+    <div
+      class="content"
+      contenteditable="true"
+      @input="updatePane"
+      v-on:keydown.8="deleteKey"
+    ><slot></slot></div>
   </div>
 </template>
 
 <script>
 import Draggable from 'draggable'
 export default {
-  props: [ 'id', 'index', ],
+  props: [ 'containerID', 'index', 'paneID' ],
   data () {
-    return {}
+    return {
+    }
   },
   mounted () {
     this.$nextTick(() => {
       var options = {
         setPosition: false,
+        handle: this.$el.querySelector('.handle'),
         onDragEnd: this.dragEnd,
       }
       new Draggable(this.$el, options)
@@ -32,9 +36,8 @@ export default {
   methods: {
     updatePane () {
       this.$store.commit('updatePane', {
-        id: this.id,
-        index: this.index,
-        content: this.$el.innerHTML,
+        paneID: this.paneID,
+        content: this.$el.querySelector('.content').innerHTML,
       })
     },
     dragEnd (element, x, y, e) {
@@ -43,17 +46,22 @@ export default {
       })
       if (droppedContainer) {
         this.$store.commit('movePane', {
-          from: this.id,
-          to: droppedContainer.getAttribute('id'),
-          content: this.$el.querySelector('.content').innerHTML,
+          paneID: this.paneID,
+          containerID: droppedContainer.getAttribute('id'),
         })
+      }
+      else console.log('dropped outside')
+    },
+    deleteKey () {
+      if (this.$el.querySelector('.content').innerHTML === '') {
+        this.$store.commit('deletePane', this.paneID)
       }
     }
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .pane {
   position: relative;
   z-index: 1;
