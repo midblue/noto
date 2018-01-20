@@ -1,5 +1,8 @@
 <template>
   <div id="app">
+    <Menu
+      v-on:addContainer="addContainer"
+    />
     <Container
       v-for="container, index in containers"
       :key="index"
@@ -13,9 +16,10 @@
 
 <script>
 import Container from './components/Container'
+import Menu from './components/Menu'
 export default {
   name: 'app',
-  components: { Container, },
+  components: { Container, Menu, },
   data () {
     return {
       containers: {},
@@ -44,6 +48,13 @@ export default {
     updateContainersInStorage () {
       const toStore = JSON.stringify(this.$store.state.containers)
       window.localStorage.setItem('containers', toStore)
+    },
+    addContainer () {
+      this.$set(this.containers, 'c' + Date.now(), {
+        x: 100,
+        y: 20,
+        panes: [ 'new' ]
+      })
     }
   }
 }

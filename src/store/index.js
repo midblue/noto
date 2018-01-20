@@ -15,8 +15,20 @@ export default new Vuex.Store({
 		},
 		updatePane (state, payload) {
 			state.containers[payload.id].panes[payload.index] = payload.content
-			const toStore = JSON.stringify(state.containers)
-			window.localStorage.setItem('containers', toStore)
+			saveToStorage(state.containers)
+		},
+		updateContainerCoords (state, payload) {
+			state.containers[payload.id].x = payload.x
+			state.containers[payload.id].y = payload.y
+			saveToStorage(state.containers)
+		},
+		movePane (state, payload) {
+			console.log(payload)
 		}
 	}
 })
+
+function saveToStorage (object) {
+	const toStore = JSON.stringify(object)
+	window.localStorage.setItem('containers', toStore)
+}
