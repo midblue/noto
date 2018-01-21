@@ -19,6 +19,8 @@
         :paneID="pane.paneID"
         :index="index"
         :initialContent="pane.content"
+        :x="pane.x"
+        :y="pane.y"
       ></Pane>
     </div>
     <div
@@ -37,11 +39,13 @@ export default {
   components: { Pane, },
   data () {
     return {
-      title: this.initialTitle,
+      title: '',
     }
   },
+  watch: {},
   mounted () {
     this.$nextTick(() => {
+      this.title = this.initialTitle
       const options = {
         grid: 20,
         smoothDrag: false,
@@ -88,6 +92,10 @@ export default {
   box-shadow: 1px 3px 8px rgba(black, .2);
   user-select: none;
 
+  &.targeted {
+    border: 1px solid black;
+  }
+
   .handle {
     cursor: move;
     padding: 5px 0;
@@ -107,6 +115,7 @@ export default {
     cursor: pointer;
     padding: 5px 0;
   }
+
 }
 
 

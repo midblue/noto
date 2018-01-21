@@ -2,6 +2,7 @@
   <div class="menu">
     <div @click="$store.commit('newContainer')">+</div>
     <div @click="$store.commit('newPane')">.</div>
+    <div @click="$store.commit('clearAll')">x</div>
   </div>
 </template>
 

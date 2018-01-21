@@ -10,22 +10,26 @@
       :containerID="index"
       :panes="container.panes"
     />
-    <Container
-      x="800"
-      y="0"
-      initialTitle="Floaters"
-      containerID="floaters"
-      :panes="floaters"
-    />
+    <Pane
+      v-for="pane, index in floaters"
+      :key="index"
+      :containerID="undefined"
+      :paneID="pane.paneID"
+      :index="index"
+      :initialContent="pane.content"
+      :x="pane.x"
+      :y="pane.y"
+    ></Pane>
   </div>
 </template>
 
 <script>
 import Container from './components/Container'
 import Menu from './components/Menu'
+import Pane from './components/Pane'
 export default {
   name: 'app',
-  components: { Container, Menu, },
+  components: { Container, Menu, Pane, },
   data () {
     return {
       renderedContainers: {},
@@ -48,14 +52,17 @@ export default {
     updateRenderedContainers () {
       this.$nextTick(() => {
         if (this.textChangeFlag) return
-        console.log('up')
         const containersWithPanes = this.containers
         const floaters = []
         for (let c in containersWithPanes) containersWithPanes[c].panes = []
         const panes = this.panes
         for (let p in panes) {
           if (panes[p].containerID && containersWithPanes.hasOwnProperty(panes[p].containerID)) {
+            const paneInContainer = panes[p]
+            paneInContainer.x = 0
+            paneInContainer.y = 0
             containersWithPanes[panes[p].containerID].panes.push(panes[p])
+            console.log('adding', containersWithPanes[panes[p].containerID])
           }
           else {
             floaters.push(panes[p])
@@ -64,6 +71,7 @@ export default {
         }
         this.floaters = floaters
         this.renderedContainers = containersWithPanes
+        console.log('up')
       })
     }
   }

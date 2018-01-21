@@ -19,7 +19,7 @@ export default new Vuex.Store({
 		},
 		newContainer (state) {
 			const id = 'c' + Date.now()
-			Vue.set(state.containers, id, { x: 100, y: 20, panes:[] })
+			Vue.set(state.containers, id, { title: 'new', x: 100, y: 20, })
       save(state.containers, 'containers')
 		},
 		updateContainer (state, payload) {
@@ -53,9 +53,17 @@ export default new Vuex.Store({
 			}
 			save(state.panes)
 		},
-		movePane (state, payload) {
+		movePaneToContainer (state, payload) {
 			const newPanes = Object.assign({}, state.panes)
 			newPanes[payload.paneID].containerID = payload.containerID
+			state.panes = newPanes
+			save(state.panes)
+		},
+		movePane (state, payload) {
+			const newPanes = Object.assign({}, state.panes)
+			newPanes[payload.paneID].x = payload.x
+			newPanes[payload.paneID].y = payload.y
+			newPanes[payload.paneID].containerID = undefined
 			state.panes = newPanes
 			save(state.panes)
 		},
@@ -65,6 +73,13 @@ export default new Vuex.Store({
 			state.panes = newPanes
 			save(state.panes)
 		},
+		clearAll (state) {
+			state.containers = {}
+			state.panes = {}
+			state.textChangeFlag = false
+			save(state.containers, 'containers')
+			save(state.panes)
+		}
 	}
 })
 

@@ -7,6 +7,10 @@ html, body {
 	box-sizing: border-box;
 }
 
+.pointer-events-off {
+	pointer-events: none;
+}
+
 .button {
 	background: lighten(#f2efeb, 3%);
   transition: all .2s;
