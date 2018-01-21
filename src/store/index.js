@@ -28,6 +28,12 @@ export default new Vuex.Store({
 			}
 			save(state.containers, 'containers')
 		},
+		deleteContainer (state, containerID) {
+			const newContainers = Object.assign({}, state.containers)
+			delete newContainers[containerID]
+			state.containers = newContainers
+			save(state.containers)
+		},
 		newPane (state, containerID) {
 			const id = 'p' + Date.now()
 			Vue.set(state.panes, id, {

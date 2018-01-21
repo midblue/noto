@@ -6,19 +6,18 @@
     <div class="handle">
       .
     </div>
-    <div
+    <textarea
       class="content"
-      contenteditable="true"
       @input="updatePane"
       v-on:keydown.8="deleteKey"
-    ><slot></slot></div>
+    >{{ content }}</textarea>
   </div>
 </template>
 
 <script>
 import Draggable from 'draggable'
 export default {
-  props: [ 'containerID', 'index', 'paneID' ],
+  props: [ 'containerID', 'index', 'paneID', 'content' ],
   data () {
     return {
     }
@@ -37,7 +36,7 @@ export default {
     updatePane () {
       this.$store.commit('updatePane', {
         paneID: this.paneID,
-        content: this.$el.querySelector('.content').innerHTML,
+        content: this.$el.querySelector('.content').value,
       })
     },
     dragEnd (element, x, y, e) {
@@ -67,6 +66,10 @@ export default {
   z-index: 1;
   padding: 10px;
   width: 100%;
+}
+
+textarea {
+  outline: none;
 }
 
 .handle {

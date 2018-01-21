@@ -4,11 +4,13 @@
     :style="`top: ${y}px; left: ${x}px;`"
     :id="containerID"
   >
+    <div class="handle button"></div>
     <div class="content">
       <h3
         class="title"
         contenteditable
         @input="updateTitle"
+        v-on:keydown.8="deleteKey"
       >{{ title }}</h3>
       <Pane
         v-for="pane, index in panes"
@@ -16,10 +18,11 @@
         :containerID="containerID"
         :paneID="pane.paneID"
         :index="index"
-      >{{ pane.content }}</Pane>
+        :content="pane.content"
+      ></Pane>
     </div>
     <div
-      class="add"
+      class="add button"
       @click="$store.commit('newPane', containerID)"
     >+</div>
   </div>
@@ -37,10 +40,11 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      var options = {
+      const options = {
         grid: 20,
         smoothDrag: false,
-        filterTarget: this.checkDragTarget,
+        handle: this.$el.querySelector('.handle'),
+        onDragStart () { console.log('d') },
         onDragEnd: this.dragEnd,
       }
       new Draggable(this.$el, options)
@@ -55,6 +59,7 @@ export default {
       })
     },
     checkDragTarget (e) {
+      console.log(e)
       return e === this.$el
     },
     updateTitle () {
@@ -62,6 +67,11 @@ export default {
         containerID: this.containerID,
         title: this.$el.querySelector('.title').innerHTML
       })
+    },
+    deleteKey () {
+      if (this.$el.querySelector('.title').innerHTML === '') {
+        this.$store.commit('deleteContainer', this.containerID)
+      }
     }
   }
 }
@@ -73,7 +83,13 @@ export default {
   z-index: 1;
   background: #fff;
   width: 300px;
-  box-shadow: 1px 3px 5px rgba(black, .1);
+  box-shadow: 1px 3px 8px rgba(black, .2);
+  user-select: none;
+
+  .handle {
+    cursor: move;
+    padding: 5px 0;
+  }
 
   .content {
     padding: 15px;
@@ -88,12 +104,6 @@ export default {
   .add {
     cursor: pointer;
     padding: 5px 0;
-    background: lighten(#f2efeb, 3%);
-    transition: all .2s;
-
-    &:hover {
-      background: darken(#f2efeb, 3%);
-    }
   }
 }
 

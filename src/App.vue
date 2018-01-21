@@ -45,7 +45,7 @@ export default {
         for (let c in containersWithPanes) containersWithPanes[c].panes = []
         const panes = this.panes
         for (let p in panes) {
-          if (panes[p].containerID){
+          if (panes[p].containerID && containersWithPanes.hasOwnProperty(panes[p].containerID)) {
             containersWithPanes[panes[p].containerID].panes.push(panes[p])
           }
           else console.log('floater')
