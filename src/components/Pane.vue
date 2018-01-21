@@ -6,24 +6,29 @@
     <div class="handle">
       .
     </div>
-    <textarea
+    <div
       class="content"
+      contenteditable="true"
       @input="updatePane"
       v-on:keydown.8="deleteKey"
-    >{{ content }}</textarea>
+    ></div>
   </div>
 </template>
 
 <script>
 import Draggable from 'draggable'
 export default {
-  props: [ 'containerID', 'index', 'paneID', 'content' ],
+  props: [ 'containerID', 'index', 'paneID', 'initialContent', ],
   data () {
     return {
+      content: this.initialContent,
+      contentObject: null
     }
   },
   mounted () {
     this.$nextTick(() => {
+      this.contentObject = this.$el.querySelector('.content')
+      this.contentObject.innerHTML = this.content
       var options = {
         setPosition: false,
         handle: this.$el.querySelector('.handle'),
@@ -36,7 +41,7 @@ export default {
     updatePane () {
       this.$store.commit('updatePane', {
         paneID: this.paneID,
-        content: this.$el.querySelector('.content').value,
+        content: this.contentObject.innerHTML,
       })
     },
     dragEnd (element, x, y, e) {
@@ -49,7 +54,13 @@ export default {
           containerID: droppedContainer.getAttribute('id'),
         })
       }
-      else console.log('dropped outside')
+      else {
+        console.log('dropped outside')
+        this.$store.commit('movePane', {
+          paneID: this.paneID,
+          containerID: 'floater',
+        })
+      }
     },
     deleteKey () {
       if (this.$el.querySelector('.content').innerHTML === '') {
@@ -66,10 +77,6 @@ export default {
   z-index: 1;
   padding: 10px;
   width: 100%;
-}
-
-textarea {
-  outline: none;
 }
 
 .handle {

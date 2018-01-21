@@ -1,6 +1,7 @@
 <template>
   <div class="menu">
     <div @click="$store.commit('newContainer')">+</div>
+    <div @click="$store.commit('newPane')">.</div>
   </div>
 </template>
 

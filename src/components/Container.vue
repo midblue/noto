@@ -18,7 +18,7 @@
         :containerID="containerID"
         :paneID="pane.paneID"
         :index="index"
-        :content="pane.content"
+        :initialContent="pane.content"
       ></Pane>
     </div>
     <div
@@ -33,10 +33,12 @@ import Draggable from 'draggable'
 
 import Pane from './Pane'
 export default {
-  props: [ 'x', 'y', 'title', 'panes', 'containerID', ],
+  props: [ 'x', 'y', 'initialTitle', 'panes', 'containerID', ],
   components: { Pane, },
   data () {
-    return {}
+    return {
+      title: this.initialTitle,
+    }
   },
   mounted () {
     this.$nextTick(() => {

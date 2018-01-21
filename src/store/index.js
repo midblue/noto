@@ -24,6 +24,7 @@ export default new Vuex.Store({
 		},
 		updateContainer (state, payload) {
 			for (let p in payload) {
+				state.textChangeFlag = (p === 'contents' || p === 'title')
 				state.containers[payload.containerID][p] = payload[p]
 			}
 			save(state.containers, 'containers')
@@ -32,13 +33,15 @@ export default new Vuex.Store({
 			const newContainers = Object.assign({}, state.containers)
 			delete newContainers[containerID]
 			state.containers = newContainers
-			save(state.containers)
+			save(state.containers, 'containers')
 		},
 		newPane (state, containerID) {
 			const id = 'p' + Date.now()
 			Vue.set(state.panes, id, {
 		    paneID: id,
 		    content: 'new',
+		    x: 100,
+		    y: 50,
 		    containerID: containerID,
 		  })
 		  save(state.panes)
@@ -51,7 +54,9 @@ export default new Vuex.Store({
 			save(state.panes)
 		},
 		movePane (state, payload) {
-			state.panes[payload.paneID].container = payload.containerID
+			const newPanes = Object.assign({}, state.panes)
+			newPanes[payload.paneID].containerID = payload.containerID
+			state.panes = newPanes
 			save(state.panes)
 		},
 		deletePane (state, paneID) {
@@ -64,6 +69,7 @@ export default new Vuex.Store({
 })
 
 function save (object, type = 'panes') {
+	// console.log(type, object)
 	const toStore = JSON.stringify(object)
 	window.localStorage.setItem(type, toStore)
 }

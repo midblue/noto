@@ -6,9 +6,16 @@
       :key="index"
       :x="container.x"
       :y="container.y"
-      :title="container.title"
+      :initialTitle="container.title"
       :containerID="index"
       :panes="container.panes"
+    />
+    <Container
+      x="800"
+      y="0"
+      initialTitle="Floaters"
+      containerID="floaters"
+      :panes="floaters"
     />
   </div>
 </template>
@@ -22,6 +29,7 @@ export default {
   data () {
     return {
       renderedContainers: {},
+      floaters: [],
     }
   },
   computed: {
@@ -42,14 +50,19 @@ export default {
         if (this.textChangeFlag) return
         console.log('up')
         const containersWithPanes = this.containers
+        const floaters = []
         for (let c in containersWithPanes) containersWithPanes[c].panes = []
         const panes = this.panes
         for (let p in panes) {
           if (panes[p].containerID && containersWithPanes.hasOwnProperty(panes[p].containerID)) {
             containersWithPanes[panes[p].containerID].panes.push(panes[p])
           }
-          else console.log('floater')
+          else {
+            floaters.push(panes[p])
+            console.log('floater')
+          }
         }
+        this.floaters = floaters
         this.renderedContainers = containersWithPanes
       })
     }
